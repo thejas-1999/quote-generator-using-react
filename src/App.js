@@ -1,23 +1,33 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from "react";
+import axios from "axios";
+import "./App.css";
 
 function App() {
+  const [quote, setQuote] = useState("Be the chief but never the lord.");
+  const handleQuotes = async () => {
+    try {
+      const res = await axios.get("https://type.fit/api/quotes");
+      if (res.data && res.data.length > 0) {
+        const randomIndex = Math.floor(Math.random() * res.data.length);
+        const randomQuote = res.data[randomIndex].text;
+        setQuote(randomQuote);
+      } else {
+        setQuote("No Quotes Available");
+      }
+    } catch (error) {
+      console.error("Errors fetching quotes;", error);
+      setQuote("Failed to fetch Quotes");
+    }
+  };
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <div className="card">
+        <h3 className="heading">{quote}</h3>
+
+        <button className="button" onClick={handleQuotes}>
+          <span>GIVE ME ADVICE!</span>
+        </button>
+      </div>
     </div>
   );
 }
